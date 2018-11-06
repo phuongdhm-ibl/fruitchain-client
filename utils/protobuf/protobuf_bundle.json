@@ -1,0 +1,748 @@
+{
+  "options": {
+    "go_package": "txn_receipt_pb2",
+    "java_multiple_files": true,
+    "java_package": "sawtooth.sdk.protobuf"
+  },
+  "nested": {
+    "Account": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "userName": {
+          "type": "string",
+          "id": 2
+        },
+        "roles": {
+          "rule": "repeated",
+          "type": "RoleType",
+          "id": 4
+        },
+        "status": {
+          "type": "Status",
+          "id": 3
+        },
+        "fruitTypeIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 5
+        },
+        "productCategoryIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 6
+        }
+      },
+      "nested": {
+        "RoleType": {
+          "values": {
+            "ROLE_TYPE_UNSET": 0,
+            "OPERATOR": 1,
+            "PRODUCER": 2,
+            "DISTRIBUTOR": 3,
+            "RETAILER": 4
+          }
+        },
+        "Status": {
+          "values": {
+            "STATUS_UNSET": 0,
+            "ACTIVATE": 1,
+            "INACTIVATE": 2
+          }
+        }
+      }
+    },
+    "BatchHeader": {
+      "fields": {
+        "signerPublicKey": {
+          "type": "string",
+          "id": 1
+        },
+        "transactionIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 2
+        }
+      }
+    },
+    "Batch": {
+      "fields": {
+        "header": {
+          "type": "bytes",
+          "id": 1
+        },
+        "headerSignature": {
+          "type": "string",
+          "id": 2
+        },
+        "transactions": {
+          "rule": "repeated",
+          "type": "Transaction",
+          "id": 3
+        },
+        "trace": {
+          "type": "bool",
+          "id": 4
+        }
+      }
+    },
+    "BatchList": {
+      "fields": {
+        "batches": {
+          "rule": "repeated",
+          "type": "Batch",
+          "id": 1
+        }
+      }
+    },
+    "TransactionHeader": {
+      "fields": {
+        "batcherPublicKey": {
+          "type": "string",
+          "id": 1
+        },
+        "dependencies": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 2
+        },
+        "familyName": {
+          "type": "string",
+          "id": 3
+        },
+        "familyVersion": {
+          "type": "string",
+          "id": 4
+        },
+        "inputs": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 5
+        },
+        "nonce": {
+          "type": "string",
+          "id": 6
+        },
+        "outputs": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 7
+        },
+        "payloadSha512": {
+          "type": "string",
+          "id": 9
+        },
+        "signerPublicKey": {
+          "type": "string",
+          "id": 10
+        }
+      }
+    },
+    "Transaction": {
+      "fields": {
+        "header": {
+          "type": "bytes",
+          "id": 1
+        },
+        "headerSignature": {
+          "type": "string",
+          "id": 2
+        },
+        "payload": {
+          "type": "bytes",
+          "id": 3
+        }
+      }
+    },
+    "TransactionList": {
+      "fields": {
+        "transactions": {
+          "rule": "repeated",
+          "type": "Transaction",
+          "id": 1
+        }
+      }
+    },
+    "BatchFruit": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 3
+        },
+        "productCategoryId": {
+          "type": "string",
+          "id": 4
+        },
+        "description": {
+          "type": "string",
+          "id": 5
+        },
+        "productionDate": {
+          "type": "string",
+          "id": 6
+        },
+        "owner": {
+          "type": "string",
+          "id": 7
+        }
+      }
+    },
+    "Delivery": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "receiverAddress": {
+          "type": "string",
+          "id": 2
+        },
+        "orderDetails": {
+          "rule": "repeated",
+          "type": "DeliveryOrderDetail",
+          "id": 3
+        }
+      }
+    },
+    "DeliveryOrderDetail": {
+      "fields": {
+        "fruitTypeId": {
+          "type": "string",
+          "id": 1
+        },
+        "productCategoryId": {
+          "type": "string",
+          "id": 2
+        },
+        "quantity": {
+          "type": "uint32",
+          "id": 3
+        },
+        "packageStampIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 4
+        }
+      }
+    },
+    "Event": {
+      "fields": {
+        "eventType": {
+          "type": "string",
+          "id": 1
+        },
+        "attributes": {
+          "rule": "repeated",
+          "type": "Attribute",
+          "id": 2
+        },
+        "data": {
+          "type": "bytes",
+          "id": 3
+        }
+      },
+      "nested": {
+        "Attribute": {
+          "fields": {
+            "key": {
+              "type": "string",
+              "id": 1
+            },
+            "value": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        }
+      }
+    },
+    "EventList": {
+      "fields": {
+        "events": {
+          "rule": "repeated",
+          "type": "Event",
+          "id": 1
+        }
+      }
+    },
+    "EventFilter": {
+      "fields": {
+        "key": {
+          "type": "string",
+          "id": 1
+        },
+        "matchString": {
+          "type": "string",
+          "id": 2
+        },
+        "filterType": {
+          "type": "FilterType",
+          "id": 3
+        }
+      },
+      "nested": {
+        "FilterType": {
+          "values": {
+            "FILTER_TYPE_UNSET": 0,
+            "SIMPLE_ANY": 1,
+            "SIMPLE_ALL": 2,
+            "REGEX_ANY": 3,
+            "REGEX_ALL": 4
+          }
+        }
+      }
+    },
+    "EventSubscription": {
+      "fields": {
+        "eventType": {
+          "type": "string",
+          "id": 1
+        },
+        "filters": {
+          "rule": "repeated",
+          "type": "EventFilter",
+          "id": 2
+        }
+      }
+    },
+    "TypeOfFruit": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        }
+      }
+    },
+    "CreateAccountEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "CreateBatchFruitEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "ActiveStampEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "CreateDeliveryEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "CreateReceiveEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "FruitchainTransactionPayload": {
+      "fields": {
+        "payloadType": {
+          "type": "PayloadType",
+          "id": 1
+        },
+        "createAccount": {
+          "type": "CreateAccountTransactionData",
+          "id": 3
+        },
+        "createStamp": {
+          "type": "CreateStampTransactionData",
+          "id": 4
+        },
+        "createFruitType": {
+          "type": "CreateFruitTypeTransactionData",
+          "id": 5
+        },
+        "createProductCategory": {
+          "type": "CreateProductCategoryTransactionData",
+          "id": 6
+        },
+        "assignFruitTypeAndProductCategory": {
+          "type": "AssignFruitTypeAndProductCategoryTransactionData",
+          "id": 7
+        },
+        "createBatchFruit": {
+          "type": "CreateBatchFruitTransactionData",
+          "id": 8
+        },
+        "activeStamp": {
+          "type": "ActiveStampTransactionData",
+          "id": 9
+        },
+        "createDelivery": {
+          "type": "CreateDeliveryTransactionData",
+          "id": 10
+        },
+        "receive": {
+          "type": "ReceiveTransactionData",
+          "id": 11
+        }
+      },
+      "nested": {
+        "PayloadType": {
+          "values": {
+            "PAYLOAD_TYPE_UNSET": 0,
+            "CREATE_OPERATOR_ACCOUNT": 1,
+            "CREATE_ACCOUNT": 2,
+            "CREATE_STAMP": 3,
+            "CREATE_FRUIT_TYPE": 4,
+            "CREATE_PRODUCT_CATEGORY": 5,
+            "CREATE_BATCH_FRUIT": 6,
+            "ACTIVE_STAMPS": 7,
+            "CREATE_DELIVERY": 8,
+            "RECEIVE": 9
+          }
+        }
+      }
+    },
+    "CreateAccountTransactionData": {
+      "fields": {
+        "userPublicAddress": {
+          "type": "string",
+          "id": 1
+        },
+        "userName": {
+          "type": "string",
+          "id": 2
+        },
+        "roleType": {
+          "rule": "repeated",
+          "type": "Account.RoleType",
+          "id": 3
+        },
+        "fruitTypeIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 5
+        },
+        "productCategoryIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 6
+        }
+      }
+    },
+    "CreateFruitTypeTransactionData": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        }
+      }
+    },
+    "CreateProductCategoryTransactionData": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 4
+        }
+      }
+    },
+    "AssignFruitTypeAndProductCategoryTransactionData": {
+      "fields": {}
+    },
+    "CreateStampTransactionData": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "owner": {
+          "type": "string",
+          "id": 2
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 3
+        },
+        "stampType": {
+          "type": "Stamp.Type",
+          "id": 4
+        }
+      }
+    },
+    "CreateBatchFruitTransactionData": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 3
+        },
+        "productCategoryId": {
+          "type": "string",
+          "id": 4
+        },
+        "description": {
+          "type": "string",
+          "id": 5
+        },
+        "productionDate": {
+          "type": "string",
+          "id": 6
+        }
+      }
+    },
+    "ActiveStampTransactionData": {
+      "fields": {
+        "activeDate": {
+          "type": "string",
+          "id": 1
+        },
+        "batchFruitId": {
+          "type": "string",
+          "id": 2
+        },
+        "productIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 3
+        },
+        "packages": {
+          "rule": "repeated",
+          "type": "ActiveStampPackage",
+          "id": 4
+        }
+      },
+      "nested": {
+        "ActiveStampPackage": {
+          "fields": {
+            "packageId": {
+              "type": "string",
+              "id": 1
+            },
+            "productIds": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 2
+            }
+          }
+        }
+      }
+    },
+    "CreateDeliveryTransactionData": {
+      "fields": {
+        "deliveryId": {
+          "type": "string",
+          "id": 1
+        },
+        "receiverAddress": {
+          "type": "string",
+          "id": 2
+        },
+        "orderDetails": {
+          "rule": "repeated",
+          "type": "DeliveryOrderDetail",
+          "id": 3
+        },
+        "shipperName": {
+          "type": "string",
+          "id": 4
+        },
+        "phoneNumber": {
+          "type": "string",
+          "id": 5
+        },
+        "backendReceiverId": {
+          "type": "string",
+          "id": 6
+        }
+      }
+    },
+    "ReceiveTransactionData": {
+      "fields": {
+        "deliveryId": {
+          "type": "string",
+          "id": 1
+        },
+        "packageStampIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 2
+        }
+      }
+    },
+    "Stamp": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "type": {
+          "type": "Type",
+          "id": 2
+        },
+        "owner": {
+          "type": "string",
+          "id": 3
+        },
+        "state": {
+          "type": "State",
+          "id": 4
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 5
+        },
+        "batchFruitId": {
+          "type": "string",
+          "id": 6
+        },
+        "productCategoryId": {
+          "type": "string",
+          "id": 7
+        },
+        "packageId": {
+          "type": "string",
+          "id": 8
+        },
+        "stampProductIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 9
+        }
+      },
+      "nested": {
+        "State": {
+          "values": {
+            "STATE_UNSET": 0,
+            "PRE_ACTIVATE": 1,
+            "DEACTIVATED": 2,
+            "ACTIVATED": 3,
+            "IN_DELIVERY": 4,
+            "SOLD": 5
+          }
+        },
+        "Type": {
+          "values": {
+            "PRODUCT": 0,
+            "PACKAGE": 1
+          }
+        }
+      }
+    },
+    "ProductCategory": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "name": {
+          "type": "string",
+          "id": 2
+        },
+        "typeOfFruitId": {
+          "type": "string",
+          "id": 4
+        }
+      }
+    },
+    "TransactionReceipt": {
+      "fields": {
+        "stateChanges": {
+          "rule": "repeated",
+          "type": "StateChange",
+          "id": 1
+        },
+        "events": {
+          "rule": "repeated",
+          "type": "Event",
+          "id": 2
+        },
+        "data": {
+          "rule": "repeated",
+          "type": "bytes",
+          "id": 3
+        },
+        "transactionId": {
+          "type": "string",
+          "id": 4
+        }
+      }
+    },
+    "StateChange": {
+      "fields": {
+        "address": {
+          "type": "string",
+          "id": 1
+        },
+        "value": {
+          "type": "bytes",
+          "id": 2
+        },
+        "type": {
+          "type": "Type",
+          "id": 3
+        }
+      },
+      "nested": {
+        "Type": {
+          "values": {
+            "TYPE_UNSET": 0,
+            "SET": 1,
+            "DELETE": 2
+          }
+        }
+      }
+    },
+    "StateChangeList": {
+      "fields": {
+        "stateChanges": {
+          "rule": "repeated",
+          "type": "StateChange",
+          "id": 1
+        }
+      }
+    }
+  }
+}
