@@ -33,7 +33,7 @@ import * as sawtoothUtils from './utils/sawtooth-utils'
 // const token = window.localStorage.getItem('token')
 // const loggedInUser = jwtDecode(token).data
 
-const USER_PRIVATE_KEY = '83002ab289212cab4c941c79a6460194c6682ce262c25066f39523cd869b359b'
+const USER_PRIVATE_KEY = 'd73329126359e3d85d1841f5ca32d4c37df734f51c7e569c883a37ff5d32a2bd'
 // const orderPosition = 13
 // const orderStringLength = 20
 
