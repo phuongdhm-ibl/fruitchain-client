@@ -19,9 +19,9 @@ function generateTransaction(data) {
     const payloadData = {
         userPublicAddress: data.userPublicAddress,
         userName: data.userName,
-        roleType: [sawtoothUtils.protoBuf.Account.RoleType.DISTRIBUTOR],
-        fruitTypeIds: data.fruitTypeIds,
-        productCategoryIds: data.productCategoryIds
+        roleType: [sawtoothUtils.protoBuf.Account.RoleType.OPERATOR],
+        // fruitTypeIds: data.fruitTypeIds,
+        // productCategoryIds: data.productCategoryIds
 
     }
 
@@ -30,7 +30,7 @@ function generateTransaction(data) {
     )
 
     const payloadBytes = sawtoothUtils.protoBuf.FruitchainTransactionPayload.encode({
-        payloadType: sawtoothUtils.protoBuf.FruitchainTransactionPayload.PayloadType.CREATE_ACCOUNT,
+        payloadType: sawtoothUtils.protoBuf.FruitchainTransactionPayload.PayloadType.CREATE_OPERATOR_ACCOUNT,
         createAccount: payload
     }).finish()
 
@@ -43,7 +43,7 @@ function generateTransaction(data) {
         outputs: inputs,
         signerPublicKey: signer.getPublicKey().asHex(),
         batcherPublicKey: '027878bbcf9223c3701c25035b5454338dae4adce0da329740e2b59d96e9ab36cb',
-        dependencies: (data.dep ? data.dep : []),
+        dependencies: [],
         payloadSha512: sawtoothUtils._hash(payloadBytes)
     }).finish()
 
