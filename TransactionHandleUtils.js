@@ -13,7 +13,8 @@ const SERVER06 = "172.104.160.219";
 const SERVER12 = "172.104.163.10";
 const SERVER13 = "139.162.41.194";
 const SERVER14 = "172.104.166.4";
-const SAWTOOTH_API = `http://localhost:8009`;
+const rest_api = process.env.REST_API || `http://localhost:8008`;
+const SAWTOOTH_API = `${rest_api}`;
 
 function parseFruitchainTransaction(rawRequest) {
   try {

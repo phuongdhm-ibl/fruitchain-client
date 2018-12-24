@@ -75,7 +75,7 @@ services:
           -o config.batch && \
         sawset proposal create \
           -k /etc/sawtooth/keys/validator.priv \
-             sawtooth.poet.target_wait_time=3 \
+             sawtooth.poet.target_wait_time=5 \
              sawtooth.poet.initial_wait_time=25 \
              sawtooth.publisher.max_batches_per_block=100 \
           -o poet-settings.batch && \
@@ -176,6 +176,8 @@ services:
       bash -c "
         sawtooth-rest-api -vvv \
           --connect tcp://validator-0:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
           --bind rest-api-0:8008
       "
     stop_signal: SIGKILL
@@ -191,6 +193,8 @@ services:
       bash -c "
         sawtooth-rest-api -vvv \
           --connect tcp://validator-1:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
           --bind rest-api-1:8008
       "
     stop_signal: SIGKILL
@@ -206,6 +210,8 @@ services:
       bash -c "
         sawtooth-rest-api -vvv\
           --connect tcp://validator-2:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
           --bind rest-api-2:8008
       "
     stop_signal: SIGKILL

@@ -9,12 +9,12 @@ const { protobuf } = require("sawtooth-sdk");
 
 import * as sawtoothUtils from "./utils/sawtooth-utils";
 
-const NUMOFTRANSACTION = 30;
-const NUMOFBATCH = 2;
+const NUMOFTRANSACTIONPERBATCH = process.env.TX;
+const NUMOFBATCH = process.env.BATCH;
 
 for (let i = 0; i < NUMOFBATCH; i++) {
   var txs = [];
-  for (let i = 0; i < NUMOFTRANSACTION; i++) {
+  for (let i = 0; i < NUMOFTRANSACTIONPERBATCH; i++) {
     let j = i + Math.ceil(Math.random() * 1000000);
     j += Math.ceil(Math.random() * 1000000);
     j += Math.ceil(Math.random() * 1000000);
