@@ -10,8 +10,10 @@ const BLOCKCHAIN_PRIVATE_KEY =
   "af22c3fb25c24830516e553f789e7ddd7fef3f0fe68a40f723c326c2ed5fb5a1";
 const SERVER05 = "172.104.36.108";
 const SERVER06 = "172.104.160.219";
+const SERVER12 = "172.104.163.10";
 const SERVER13 = "139.162.41.194";
-const SAWTOOTH_API = `http://${SERVER06}:8008`;
+const SERVER14 = "172.104.166.4";
+const SAWTOOTH_API = `http://localhost:8009`;
 
 function parseFruitchainTransaction(rawRequest) {
   try {
