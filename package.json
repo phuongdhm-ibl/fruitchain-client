@@ -12,6 +12,7 @@
   "dependencies": {
     "babel-preset-es2015": "^6.24.1",
     "protobufjs": "^6.8.8",
+    "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "sawtooth-sdk": "github:socoboy/sawtooth-sdk-javascript-react#frontend"
   },
