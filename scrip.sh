@@ -52,6 +52,7 @@ PORT=8008
 
 if [ $# = 5 ]; then
     PORT=$5
+fi
 
 while true; do
     echo "Send rate: $2 TXs per Batch, $3 Batchs per $4 second"
