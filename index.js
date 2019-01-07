@@ -18,8 +18,10 @@ for (let i = 0; i < NUMOFBATCH; i++) {
     let j = i + Math.ceil(Math.random() * 1000000);
     j += Math.ceil(Math.random() * 1000000);
     j += Math.ceil(Math.random() * 1000000);
+    j += Math.ceil(Math.random() * 1000000);
+    j += Math.ceil(Math.random() * 1000000);
     let tp = j.toString();
-    while (tp.length < 66) tp += "b";
+    while (tp.length < 66) tp += "x";
     const tx_bytes = create_user.generateTransaction({
       userPublicAddress: tp,
       userName: "1",

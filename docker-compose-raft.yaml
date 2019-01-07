@@ -1,0 +1,6 @@
+fruitchain-tp-go:
+  image: bacbia/sawtooth-fruitchain-tp-go:latest
+  labels:
+    - "com.sawtooth.isolation_id=${ISOLATION_ID:-}"
+  command: fruitchain-tp-go -C tcp://validator:4004 -v
+  stop_signal: SIGKILL
