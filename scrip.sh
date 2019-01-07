@@ -48,9 +48,14 @@ case $1 in
         ;;
 esac
 
+PORT=8008
+
+if [ $# = 5 ]; then
+    PORT=$5
+
 while true; do
     echo "Send rate: $2 TXs per Batch, $3 Batchs per $4 second"
     echo "===========Sending transaction to SERVER ${1}============"
-    REST_API="http://${URL}:8008" TX=$2 BATCH=$3 node ./main.js
+    REST_API="http://${URL}:${PORT}" TX=$2 BATCH=$3 node ./main.js
     sleep $4
 done
