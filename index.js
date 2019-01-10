@@ -21,7 +21,7 @@ for (let i = 0; i < NUMOFBATCH; i++) {
     j += Math.ceil(Math.random() * 1000000);
     j += Math.ceil(Math.random() * 1000000);
     let tp = j.toString();
-    while (tp.length < 66) tp += "x";
+    while (tp.length < 66) tp += "a";
     const tx_bytes = create_user.generateTransaction({
       userPublicAddress: tp,
       userName: "1",

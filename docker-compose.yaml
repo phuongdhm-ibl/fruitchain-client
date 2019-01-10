@@ -35,6 +35,7 @@ services:
   validator-0:
     image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default-0
+    hostname: sawtooth-0
     expose:
       - 4004
       - 5050
@@ -66,7 +67,7 @@ services:
           -o config.batch && \
         sawset proposal create \
           -k /etc/sawtooth/keys/validator.priv \
-             sawtooth.poet.target_wait_time=5 \
+             sawtooth.poet.target_wait_time=60 \
              sawtooth.poet.initial_wait_time=25 \
              sawtooth.publisher.max_batches_per_block=100 \
           -o poet-settings.batch && \
@@ -92,6 +93,7 @@ services:
   validator-1:
     image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default-1
+    hostname: sawtooth-1
     expose:
       - 4004
       - 5050
@@ -127,6 +129,7 @@ services:
   validator-2:
     image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default-2
+    hostname: sawtooth-2
     expose:
       - 4004
       - 5050
@@ -162,6 +165,7 @@ services:
   validator-3:
     image: hyperledger/sawtooth-validator:1.1
     container_name: sawtooth-validator-default-3
+    hostname: sawtooth-3
     expose:
       - 4004
       - 5050
@@ -315,7 +319,7 @@ services:
         while [ ! -f /poet-shared/validator-0/keys/validator.priv ]; do sleep 1; done && \
         cp -a /poet-shared/validator-0/keys /etc/sawtooth && \
         poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
-        poet-engine -v -C tcp://validator-0:5050 --component tcp://validator-0:4004 \
+        poet-engine -vv -C tcp://validator-0:5050 --component tcp://validator-0:4004 \
     \""
 
   poet-engine-1:
@@ -329,7 +333,7 @@ services:
     command: "bash -c \"\
         while [ ! -f /poet-shared/validator-1/keys/validator.priv ]; do sleep 1; done && \
         cp -a /poet-shared/validator-1/keys /etc/sawtooth && \
-        poet-engine -v -C tcp://validator-1:5050 --component tcp://validator-1:4004 \
+        poet-engine -vv -C tcp://validator-1:5050 --component tcp://validator-1:4004 \
     \""
 
   poet-engine-2:
@@ -343,7 +347,7 @@ services:
     command: "bash -c \"\
         while [ ! -f /poet-shared/validator-2/keys/validator.priv ]; do sleep 1; done && \
         cp -a /poet-shared/validator-2/keys /etc/sawtooth && \
-        poet-engine -v -C tcp://validator-2:5050 --component tcp://validator-2:4004 \
+        poet-engine -vv -C tcp://validator-2:5050 --component tcp://validator-2:4004 \
     \""
 
   poet-engine-3:
@@ -357,7 +361,7 @@ services:
     command: "bash -c \"\
         while [ ! -f /poet-shared/validator-3/keys/validator.priv ]; do sleep 1; done && \
         cp -a /poet-shared/validator-3/keys /etc/sawtooth && \
-        poet-engine -v -C tcp://validator-3:5050 --component tcp://validator-3:4004 \
+        poet-engine -vv -C tcp://validator-3:5050 --component tcp://validator-3:4004 \
     \""
 
   poet-validator-registry-tp-0:
@@ -365,7 +369,7 @@ services:
     container_name: sawtooth-poet-validator-registry-tp-0
     expose:
       - 4004
-    command: poet-validator-registry-tp -v -C tcp://validator-0:4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-0:4004
     environment:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
     stop_signal: SIGKILL
@@ -375,7 +379,7 @@ services:
     container_name: sawtooth-poet-validator-registry-tp-1
     expose:
       - 4004
-    command: poet-validator-registry-tp -v -C tcp://validator-1:4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-1:4004
     environment:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
     stop_signal: SIGKILL
@@ -385,7 +389,7 @@ services:
     container_name: sawtooth-poet-validator-registry-tp-2
     expose:
       - 4004
-    command: poet-validator-registry-tp -v -C tcp://validator-2:4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-2:4004
     environment:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
     stop_signal: SIGKILL
@@ -395,7 +399,7 @@ services:
     container_name: sawtooth-poet-validator-registry-tp-3
     expose:
       - 4004
-    command: poet-validator-registry-tp -v -C tcp://validator-3:4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-3:4004
     environment:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
     stop_signal: SIGKILL
@@ -405,7 +409,7 @@ services:
     container_name: fruitchain-tp-0
     expose:
       - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-0:4004
+    command: fruitchain-tp-go -vv -C tcp://validator-0:4004
     stop_signal: SIGKILL
 
   fruitchain-tp-go-1:
@@ -413,7 +417,7 @@ services:
     container_name: fruitchain-tp-1
     expose:
       - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-1:4004
+    command: fruitchain-tp-go -vv -C tcp://validator-1:4004
     stop_signal: SIGKILL
 
   fruitchain-tp-go-2:
@@ -421,7 +425,7 @@ services:
     container_name: fruitchain-tp-2
     expose:
       - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-2:4004
+    command: fruitchain-tp-go -vv -C tcp://validator-2:4004
     stop_signal: SIGKILL
 
   fruitchain-tp-go-3:
@@ -429,5 +433,5 @@ services:
     container_name: fruitchain-tp-3
     expose:
       - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-3:4004
+    command: fruitchain-tp-go -vv -C tcp://validator-3:4004
     stop_signal: SIGKILL
