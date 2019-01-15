@@ -1,25 +1,19 @@
+// TODO:
 import * as sawtoothUtils from "./utils/sawtooth-utils";
 
-const BATCH_SIGNER_PUBLIC_KEY =
+const BACK_END_PUBLIC_KEY =
   "027878bbcf9223c3701c25035b5454338dae4adce0da329740e2b59d96e9ab36cb";
-const USER_PRIVATE_KEY =
+const BACK_END_PRIVATE_KEY =
   "e2a182e60885fe865051b694d5be36041e0f81c346f3f93265085966487bb31f";
 
 function generateTransaction(data) {
   const context = sawtoothUtils.createContext("secp256k1");
-  const userPrivateKey = USER_PRIVATE_KEY;
+  const userPrivateKey = BACK_END_PRIVATE_KEY;
   const privateKey = sawtoothUtils.Secp256k1PrivateKey.fromHex(userPrivateKey);
   const signer = new sawtoothUtils.CryptoFactory(context).newSigner(privateKey);
 
-  const payloadData = {
-    userPublicAddress: data.userPublicAddress,
-    userName: data.userName,
-    roleType: data.roleType === undefined || [
-      sawtoothUtils.protoBuf.Account.RoleType.OPERATOR
-    ]
-  };
-
-  const payload = sawtoothUtils.protoBuf.CreateAccountTransactionData.create(
+  const payloadData = Object.assign(data);
+  const payload = sawtoothUtils.protoBuf.CreatePermissionTransacitonData.create(
     payloadData
   );
 
@@ -27,12 +21,14 @@ function generateTransaction(data) {
     {
       payloadType:
         sawtoothUtils.protoBuf.FruitchainTransactionPayload.PayloadType
-          .CREATE_OPERATOR_ACCOUNT,
-      createAccount: payload
+          .CREATE_PERMISSION,
+      createPermission: payload
     }
   ).finish();
 
-  const inputs = [sawtoothUtils.calculateAddress(data.userPublicAddress)];
+  const inputs = [
+    sawtoothUtils.calculateAddressPermission(data.permissionPublicAddress)
+  ];
 
   const transactionHeaderBytes = sawtoothUtils.protoBuf.TransactionHeader.encode(
     {
@@ -41,7 +37,7 @@ function generateTransaction(data) {
       inputs,
       outputs: inputs,
       signerPublicKey: signer.getPublicKey().asHex(),
-      batcherPublicKey: BATCH_SIGNER_PUBLIC_KEY,
+      batcherPublicKey: BACK_END_PUBLIC_KEY,
       dependencies: [],
       payloadSha512: sawtoothUtils._hash(payloadBytes)
     }

@@ -42,7 +42,8 @@
             "OPERATOR": 1,
             "PRODUCER": 2,
             "DISTRIBUTOR": 3,
-            "RETAILER": 4
+            "RETAILER": 4,
+            "ADMIN": 5
           }
         },
         "Status": {
@@ -367,6 +368,46 @@
         }
       }
     },
+    "CreateAndAssignStampEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "AssignUserRoleEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "RevokeUserRoleEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "AssignFruitTypeProductCategoryEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
+    "RevokeFruitTypeProductCategoryEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
     "FruitchainTransactionPayload": {
       "fields": {
         "payloadType": {
@@ -389,8 +430,8 @@
           "type": "CreateProductCategoryTransactionData",
           "id": 6
         },
-        "assignFruitTypeAndProductCategory": {
-          "type": "AssignFruitTypeAndProductCategoryTransactionData",
+        "modifyFruitTypeProductCategory": {
+          "type": "ModifyFruitTypeProductCategoryTransactionData",
           "id": 7
         },
         "createBatchFruit": {
@@ -408,6 +449,14 @@
         "receive": {
           "type": "ReceiveTransactionData",
           "id": 11
+        },
+        "createPermission": {
+          "type": "CreatePermissionTransacitonData",
+          "id": 12
+        },
+        "modifyRole": {
+          "type": "ModifyRoleTransactionData",
+          "id": 13
         }
       },
       "nested": {
@@ -422,7 +471,12 @@
             "CREATE_BATCH_FRUIT": 6,
             "ACTIVE_STAMPS": 7,
             "CREATE_DELIVERY": 8,
-            "RECEIVE": 9
+            "RECEIVE": 9,
+            "CREATE_PERMISSION": 10,
+            "ASSIGN_ROLE": 11,
+            "REVOKE_ROLE": 12,
+            "ASSIGN_FRUIT_TYPE_PRODUCT_CATEGORY": 13,
+            "REVOKE_FRUIT_TYPE_PRODUCT_CATEGORY": 14
           }
         }
       }
@@ -482,12 +536,41 @@
         }
       }
     },
-    "AssignFruitTypeAndProductCategoryTransactionData": {
-      "fields": {}
+    "ModifyFruitTypeProductCategoryTransactionData": {
+      "fields": {
+        "userPublicAddress": {
+          "type": "string",
+          "id": 1
+        },
+        "typeOfFruitIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 2
+        },
+        "productCategoryIds": {
+          "rule": "repeated",
+          "type": "string",
+          "id": 3
+        }
+      }
+    },
+    "ModifyRoleTransactionData": {
+      "fields": {
+        "userPublicAddress": {
+          "type": "string",
+          "id": 1
+        },
+        "roleTypes": {
+          "rule": "repeated",
+          "type": "Account.RoleType",
+          "id": 2
+        }
+      }
     },
     "CreateStampTransactionData": {
       "fields": {
-        "id": {
+        "ids": {
+          "rule": "repeated",
           "type": "string",
           "id": 1
         },
@@ -599,6 +682,19 @@
         }
       }
     },
+    "CreatePermissionTransacitonData": {
+      "fields": {
+        "permissionPublicAddress": {
+          "type": "string",
+          "id": 1
+        },
+        "permissionTypes": {
+          "rule": "repeated",
+          "type": "Permission.PermissionType",
+          "id": 2
+        }
+      }
+    },
     "ReceiveTransactionData": {
       "fields": {
         "deliveryId": {
@@ -667,6 +763,38 @@
           "values": {
             "PRODUCT": 0,
             "PACKAGE": 1
+          }
+        }
+      }
+    },
+    "Permission": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "id": 1
+        },
+        "permissionType": {
+          "rule": "repeated",
+          "type": "PermissionType",
+          "id": 2
+        },
+        "status": {
+          "type": "Status",
+          "id": 3
+        }
+      },
+      "nested": {
+        "PermissionType": {
+          "values": {
+            "PERMISSION_TYPE_UNSET": 0,
+            "BACKEND": 1
+          }
+        },
+        "Status": {
+          "values": {
+            "STATUS_UNSET": 0,
+            "ACTIVATE": 1,
+            "INACTIVATE": 2
           }
         }
       }

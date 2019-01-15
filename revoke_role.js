@@ -11,15 +11,9 @@ function generateTransaction(data) {
   const privateKey = sawtoothUtils.Secp256k1PrivateKey.fromHex(userPrivateKey);
   const signer = new sawtoothUtils.CryptoFactory(context).newSigner(privateKey);
 
-  const payloadData = {
-    userPublicAddress: data.userPublicAddress,
-    userName: data.userName,
-    roleType: data.roleType === undefined || [
-      sawtoothUtils.protoBuf.Account.RoleType.OPERATOR
-    ]
-  };
+  const payloadData = Object.assign(data);
 
-  const payload = sawtoothUtils.protoBuf.CreateAccountTransactionData.create(
+  const payload = sawtoothUtils.protoBuf.ModifyRoleTransactionData.create(
     payloadData
   );
 
@@ -27,13 +21,17 @@ function generateTransaction(data) {
     {
       payloadType:
         sawtoothUtils.protoBuf.FruitchainTransactionPayload.PayloadType
-          .CREATE_OPERATOR_ACCOUNT,
-      createAccount: payload
+          .REVOKE_ROLE,
+      modifyRole: payload
     }
   ).finish();
 
-  const inputs = [sawtoothUtils.calculateAddress(data.userPublicAddress)];
+  const inputs = [
+    sawtoothUtils.calculateAddress(data.userPublicAddress),
+    sawtoothUtils.calculateAddressPermission(signer.getPublicKey().asHex())
+  ];
 
+  // This part will wrap transaction
   const transactionHeaderBytes = sawtoothUtils.protoBuf.TransactionHeader.encode(
     {
       familyName: sawtoothUtils.FAMILY_NAME,

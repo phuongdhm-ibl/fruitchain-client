@@ -350,34 +350,34 @@ services:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
     stop_signal: SIGKILL
 
-  fruitchain-tp-go-0:
-    image: bacbia/sawtooth-fruitchain-tp-go:test
-    container_name: fruitchain-tp-0
-    expose:
-      - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-0:4004
-    stop_signal: SIGKILL
+  # fruitchain-tp-go-0:
+  #   image: bacbia/sawtooth-fruitchain-tp-go:test
+  #   container_name: fruitchain-tp-0
+  #   expose:
+  #     - 4004
+  #   command: fruitchain-tp-go -v -C tcp://validator-0:4004
+  #   stop_signal: SIGKILL
 
-  fruitchain-tp-go-1:
-    image: bacbia/sawtooth-fruitchain-tp-go:test
-    container_name: fruitchain-tp-1
-    expose:
-      - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-1:4004
-    stop_signal: SIGKILL
+  # fruitchain-tp-go-1:
+  #   image: bacbia/sawtooth-fruitchain-tp-go:test
+  #   container_name: fruitchain-tp-1
+  #   expose:
+  #     - 4004
+  #   command: fruitchain-tp-go -v -C tcp://validator-1:4004
+  #   stop_signal: SIGKILL
 
-  fruitchain-tp-go-2:
-    image: bacbia/sawtooth-fruitchain-tp-go:test
-    container_name: fruitchain-tp-2
-    expose:
-      - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-2:4004
-    stop_signal: SIGKILL
+  # fruitchain-tp-go-2:
+  #   image: bacbia/sawtooth-fruitchain-tp-go:test
+  #   container_name: fruitchain-tp-2
+  #   expose:
+  #     - 4004
+  #   command: fruitchain-tp-go -v -C tcp://validator-2:4004
+  #   stop_signal: SIGKILL
 
-  fruitchain-tp-go-3:
-    image: bacbia/sawtooth-fruitchain-tp-go:test
-    container_name: fruitchain-tp-3
-    expose:
-      - 4004
-    command: fruitchain-tp-go -v -C tcp://validator-3:4004
-    stop_signal: SIGKILL
+  # fruitchain-tp-go-3:
+  #   image: bacbia/sawtooth-fruitchain-tp-go:test
+  #   container_name: fruitchain-tp-3
+  #   expose:
+  #     - 4004
+  #   command: fruitchain-tp-go -v -C tcp://validator-3:4004
+  #   stop_signal: SIGKILL

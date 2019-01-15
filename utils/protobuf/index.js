@@ -15,15 +15,15 @@
  * ------------------------------------------------------------------------------
  */
 
-const protobuf = require('protobufjs')
+const protobuf = require("protobufjs");
 
-const root = protobuf.Root.fromJSON(require('./protobuf_bundle.json'))
+const root = protobuf.Root.fromJSON(require("./protobuf_bundle.json"));
 
 const exportableMessages = Object.keys(root)
   .filter(key => /^[A-Z]/.test(key))
   .reduce((acc, key) => {
-    acc[key] = root[key]
-    return acc
-  }, {})
+    acc[key] = root[key];
+    return acc;
+  }, {});
 
-module.exports = exportableMessages
+module.exports = exportableMessages;
