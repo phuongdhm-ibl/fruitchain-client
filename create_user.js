@@ -14,7 +14,7 @@ function generateTransaction(data) {
   const payloadData = {
     userPublicAddress: data.userPublicAddress,
     userName: data.userName,
-    roleType: data.roleType === undefined || [
+    roleType: data.roleType || [
       sawtoothUtils.protoBuf.Account.RoleType.OPERATOR
     ]
   };

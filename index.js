@@ -14,13 +14,13 @@ const { protobuf } = require("sawtooth-sdk");
 
 import * as sawtoothUtils from "./utils/sawtooth-utils";
 
-// createRandomOperator();
+createRandomOperator();
 // createPermission();
 // createUser();
 // assignRole();
 // revokeRole();
 // assignFruitTypeProductCategory();
-revokeFruitTypeProductCategory();
+//revokeFruitTypeProductCategory();
 
 function createRandomOperator() {
   const NUMOFTRANSACTIONPERBATCH = process.env.TX || 1;
