@@ -88,11 +88,6 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 200M
     stop_signal: SIGKILL
 
   validator-1:
@@ -129,11 +124,6 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 200M
     stop_signal: SIGKILL
 
   validator-2:
@@ -170,11 +160,6 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 200M
     stop_signal: SIGKILL
 
   validator-3:
@@ -211,11 +196,6 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 200M
     stop_signal: SIGKILL
 
   rest-api-0:
