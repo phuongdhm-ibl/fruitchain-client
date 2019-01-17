@@ -73,7 +73,7 @@ services:
           -o poet-settings.batch && \
         sawadm genesis \
           config-genesis.batch config.batch poet.batch poet-settings.batch && \
-        sawtooth-validator -v \
+        sawtooth-validator -vv \
           --bind network:tcp://eth0:8800 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
@@ -88,6 +88,11 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 200M
     stop_signal: SIGKILL
 
   validator-1:
@@ -108,7 +113,7 @@ services:
         sawadm keygen --force && \
         mkdir -p /poet-shared/validator-1 || true && \
         cp -a /etc/sawtooth/keys /poet-shared/validator-1/ && \
-        sawtooth-validator -v \
+        sawtooth-validator -vv \
             --bind network:tcp://eth0:8800 \
             --bind component:tcp://eth0:4004 \
             --bind consensus:tcp://eth0:5050 \
@@ -124,6 +129,11 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 200M
     stop_signal: SIGKILL
 
   validator-2:
@@ -144,7 +154,7 @@ services:
         sawadm keygen --force && \
         mkdir -p /poet-shared/validator-2 && \
         cp -a /etc/sawtooth/keys /poet-shared/validator-2/ && \
-        sawtooth-validator -v \
+        sawtooth-validator -vv \
             --bind network:tcp://eth0:8800 \
             --bind component:tcp://eth0:4004 \
             --bind consensus:tcp://eth0:5050 \
@@ -160,6 +170,11 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 200M
     stop_signal: SIGKILL
 
   validator-3:
@@ -180,7 +195,7 @@ services:
         sawadm keygen --force && \
         mkdir -p /poet-shared/validator-3 && \
         cp -a /etc/sawtooth/keys /poet-shared/validator-3/ && \
-        sawtooth-validator -v \
+        sawtooth-validator -vv \
             --bind network:tcp://eth0:8800 \
             --bind component:tcp://eth0:4004 \
             --bind consensus:tcp://eth0:5050 \
@@ -196,6 +211,11 @@ services:
       PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
         /project/sawtooth-core/consensus/poet/simulator:\
         /project/sawtooth-core/consensus/poet/core"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 200M
     stop_signal: SIGKILL
 
   rest-api-0:

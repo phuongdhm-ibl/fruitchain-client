@@ -22,6 +22,17 @@ createRandomOperator();
 // assignFruitTypeProductCategory();
 //revokeFruitTypeProductCategory();
 
+function makeid(len) {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < len; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 function createRandomOperator() {
   const NUMOFTRANSACTIONPERBATCH = process.env.TX || 1;
   const NUMOFBATCH = process.env.BATCH || 1;
@@ -29,13 +40,8 @@ function createRandomOperator() {
     var txs = [];
 
     for (let i = 0; i < NUMOFTRANSACTIONPERBATCH; i++) {
-      let j = i + Math.ceil(Math.random() * 1000000);
-      j += Math.ceil(Math.random() * 1000000);
-      j += Math.ceil(Math.random() * 1000000);
-      j += Math.ceil(Math.random() * 1000000);
-      j += Math.ceil(Math.random() * 1000000);
-      let tp = j.toString();
-      while (tp.length < 66) tp += "a";
+      const tp = makeid(66 - 13) + Date.now();
+      console.log(tp);
       const tx_bytes = create_user.generateTransaction({
         userPublicAddress: tp,
         userName: "1",
