@@ -4,6 +4,7 @@ import confirm_receive from "./confirm_receive";
 import create_permission from "./create_permission";
 import assign_role from "./assign_role";
 import revoke_role from "./revoke_role";
+import dummy from "./dummy";
 import assign_fruit_type_product_category from "./assign_fruit_type_product_category";
 import revoke_fruit_type_product_category from "./revoke_fruit_type_product_category";
 import { wrapTransactionsToBatchAndSubmit } from "./TransactionHandleUtils";
@@ -14,13 +15,14 @@ const { protobuf } = require("sawtooth-sdk");
 
 import * as sawtoothUtils from "./utils/sawtooth-utils";
 
-createRandomOperator();
+// createRandomOperator();
 // createPermission();
 // createUser();
 // assignRole();
 // revokeRole();
 // assignFruitTypeProductCategory();
-//revokeFruitTypeProductCategory();
+// revokeFruitTypeProductCategory();
+// sendDummy();
 
 function makeid(len) {
   var text = "";
@@ -39,7 +41,7 @@ function createRandomOperator() {
   for (let i = 0; i < NUMOFBATCH; i++) {
     var txs = [];
 
-    for (let i = 0; i < NUMOFTRANSACTIONPERBATCH; i++) {
+    for (let j = 0; j < NUMOFTRANSACTIONPERBATCH; j++) {
       const tp = makeid(66 - 13) + Date.now();
       console.log(tp);
       const tx_bytes = create_user.generateTransaction({
@@ -138,4 +140,23 @@ function revokeFruitTypeProductCategory() {
   wrapTransactionsToBatchAndSubmit([
     protobuf.Transaction.decode(Buffer.from(tx_bytes))
   ]);
+}
+
+function sendDummy() {
+  const NUMOFTRANSACTIONPERBATCH = process.env.TX || 1;
+  const NUMOFBATCH = process.env.BATCH || 1;
+
+  for (let i = 0; i < NUMOFBATCH; i++) {
+    var txs = [];
+
+    for (let j = 0; j < NUMOFTRANSACTIONPERBATCH; j++) {
+      const tx_bytes = dummy.generateTransaction({
+        randomText: makeid(30) + Date.now()
+      });
+      const tx = protobuf.Transaction.decode(Buffer.from(tx_bytes));
+      txs.push(tx);
+    }
+  }
+
+  wrapTransactionsToBatchAndSubmit(txs);
 }

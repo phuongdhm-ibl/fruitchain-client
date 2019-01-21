@@ -51,7 +51,8 @@ function wrapTransactionsToBatchAndSubmit(transactions) {
     batches: [batch]
   }).finish();
 
-  return sentBatchToValidator(batchListBytes);
+  sentBatchToValidator(batchListBytes);
+  return batchSignature;
 }
 
 function sentBatchToValidator(batch) {

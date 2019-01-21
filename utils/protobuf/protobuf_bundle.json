@@ -408,6 +408,14 @@
         }
       }
     },
+    "DummyEvent": {
+      "fields": {
+        "txnId": {
+          "type": "string",
+          "id": 1
+        }
+      }
+    },
     "FruitchainTransactionPayload": {
       "fields": {
         "payloadType": {
@@ -457,6 +465,10 @@
         "modifyRole": {
           "type": "ModifyRoleTransactionData",
           "id": 13
+        },
+        "dummy": {
+          "type": "DummyTransactionData",
+          "id": 14
         }
       },
       "nested": {
@@ -476,7 +488,8 @@
             "ASSIGN_ROLE": 11,
             "REVOKE_ROLE": 12,
             "ASSIGN_FRUIT_TYPE_PRODUCT_CATEGORY": 13,
-            "REVOKE_FRUIT_TYPE_PRODUCT_CATEGORY": 14
+            "REVOKE_FRUIT_TYPE_PRODUCT_CATEGORY": 14,
+            "DUMMY": 15
           }
         }
       }
@@ -705,6 +718,14 @@
           "rule": "repeated",
           "type": "string",
           "id": 2
+        }
+      }
+    },
+    "DummyTransactionData": {
+      "fields": {
+        "randomText": {
+          "type": "string",
+          "id": 1
         }
       }
     },
