@@ -48,7 +48,7 @@ async function testValidator() {
         clearInterval(_setInterval);
         resolve(true);
       }
-      if (count === 100) {
+      if (count === 20) {
         clearInterval(_setInterval);
         resolve(false);
       }

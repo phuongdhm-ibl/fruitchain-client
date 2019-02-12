@@ -9,13 +9,11 @@ import assign_fruit_type_product_category from "./assign_fruit_type_product_cate
 import revoke_fruit_type_product_category from "./revoke_fruit_type_product_category";
 import { wrapTransactionsToBatchAndSubmit } from "./TransactionHandleUtils";
 
-// import * as sawtoothUtils from './utils/sawtooth-utils'
-
 const { protobuf } = require("sawtooth-sdk");
 
 import * as sawtoothUtils from "./utils/sawtooth-utils";
 
-// createRandomOperator();
+ createRandomOperator();
 // createPermission();
 // createUser();
 // assignRole();
@@ -156,7 +154,6 @@ function sendDummy() {
       const tx = protobuf.Transaction.decode(Buffer.from(tx_bytes));
       txs.push(tx);
     }
-  }
-
   wrapTransactionsToBatchAndSubmit(txs);
+  }
 }

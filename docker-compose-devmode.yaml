@@ -25,6 +25,7 @@ services:
   validator:
     image: hyperledger/sawtooth-validator:1.1.2
     container_name: validator
+    hostname: sawtooth-validator
     expose:
       - 4004
       - 8800
@@ -93,9 +94,16 @@ services:
     ports:
       - "8086:8086"
     stop_signal: SIGKILL
+
   grafana:
     image: socoboy/installed-sawtooth-stats-grafana:1.2.1
     container_name: grafana
     ports:
       - "3000:3000"
+    stop_signal: SIGKILL
+
+  block-info-tp:
+    image: sawtooth-block-info-tp:1.1.2
+    container_name: block-info-tp
+    command: block-info-tp -vvv -C tcp://validator:4004
     stop_signal: SIGKILL
