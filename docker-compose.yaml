@@ -33,7 +33,7 @@ services:
     stop_signal: SIGKILL
 
   validator-0:
-    image: hyperledger/sawtooth-validator:1.1.3
+    image: hyperledger/sawtooth-validator:1.1.4
     container_name: sawtooth-validator-default-0
     hostname: sawtooth-0
     expose:
@@ -91,7 +91,7 @@ services:
     stop_signal: SIGKILL
 
   validator-1:
-    image: hyperledger/sawtooth-validator:1.1.3
+    image: hyperledger/sawtooth-validator:1.1.4
     container_name: sawtooth-validator-default-1
     hostname: sawtooth-1
     expose:
@@ -127,7 +127,7 @@ services:
     stop_signal: SIGKILL
 
   validator-2:
-    image: hyperledger/sawtooth-validator:1.1.3
+    image: hyperledger/sawtooth-validator:1.1.4
     container_name: sawtooth-validator-default-2
     hostname: sawtooth-2
     expose:
@@ -163,7 +163,7 @@ services:
     stop_signal: SIGKILL
 
   validator-3:
-    image: hyperledger/sawtooth-validator:1.1.3
+    image: hyperledger/sawtooth-validator:1.1.4
     container_name: sawtooth-validator-default-3
     hostname: sawtooth-3
     expose:
@@ -199,7 +199,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-0:
-    image: hyperledger/sawtooth-rest-api:1.1.3
+    image: hyperledger/sawtooth-rest-api:1.1.4
     container_name: sawtooth-rest-api-default-0
     expose:
       - 8008
@@ -216,7 +216,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-1:
-    image: hyperledger/sawtooth-rest-api:1.1.3
+    image: hyperledger/sawtooth-rest-api:1.1.4
     container_name: sawtooth-rest-api-default-1
     expose:
       - 8008
@@ -233,7 +233,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-2:
-    image: hyperledger/sawtooth-rest-api:1.1.3
+    image: hyperledger/sawtooth-rest-api:1.1.4
     container_name: sawtooth-rest-api-default-2
     expose:
       - 8008
@@ -250,7 +250,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-3:
-    image: hyperledger/sawtooth-rest-api:1.1.3
+    image: hyperledger/sawtooth-rest-api:1.1.4
     container_name: sawtooth-rest-api-default-3
     expose:
       - 8008
@@ -267,7 +267,7 @@ services:
     stop_signal: SIGKILL
 
   settings-tp-0:
-    image: hyperledger/sawtooth-settings-tp:1.1.3
+    image: hyperledger/sawtooth-settings-tp:1.1.4
     container_name: sawtooth-settings-tp-default-0
     expose:
       - 4004
@@ -275,7 +275,7 @@ services:
     stop_signal: SIGKILL
 
   settings-tp-1:
-    image: hyperledger/sawtooth-settings-tp:1.1.3
+    image: hyperledger/sawtooth-settings-tp:1.1.4
     container_name: sawtooth-settings-tp-default-1
     expose:
       - 4004
@@ -283,7 +283,7 @@ services:
     stop_signal: SIGKILL
 
   settings-tp-2:
-    image: hyperledger/sawtooth-settings-tp:1.1.3
+    image: hyperledger/sawtooth-settings-tp:1.1.4
     container_name: sawtooth-settings-tp-default-2
     expose:
       - 4004
@@ -291,7 +291,7 @@ services:
     stop_signal: SIGKILL
 
   settings-tp-3:
-    image: hyperledger/sawtooth-settings-tp:1.1.3
+    image: hyperledger/sawtooth-settings-tp:1.1.4
     container_name: sawtooth-settings-tp-default-3
     expose:
       - 4004
