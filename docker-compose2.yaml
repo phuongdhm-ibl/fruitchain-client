@@ -1,0 +1,501 @@
+# Copyrigt 2018 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+version: "3.6"
+
+services:
+  shell:
+    image: hyperledger/sawtooth-shell
+    container_name: sawtooth-shell
+    entrypoint: "bash -c \"\
+        sawtooth keygen && \
+        tail -f /dev/null \
+        \"" 
+
+  influxdb:
+    image: socoboy/installed-sawtooth-stats-influxdb:1.2.1
+    container_name: sawtooth-stats-influxdb-default
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./monitor:/var/lib/influxdb
+    stop_signal: SIGKILL
+
+  telegraf:
+    image: telegraf
+    container_name: sawtooth-stats-telegraf-default
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf
+    stop_signal: SIGKILL
+
+  chronograf:
+    image: chronograf
+    container_name: sawtooth-stats-chronograf-default
+    ports:
+      - "8888:8888"
+    stop_signal: SIGKILL       
+
+  kapacitor:
+    image: kapacitor
+    container_name: sawtooth-stats-kapacitor-default
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf
+    stop_signal: SIGKILL
+
+  grafana:
+    image: socoboy/installed-sawtooth-stats-grafana:1.2.1
+    container_name: sawtooth-stats-grafana-default
+    ports:
+      - "80:3000"
+    stop_signal: SIGKILL
+
+  validator-0:
+    image: hyperledger/sawtooth-validator:1.1.4
+    container_name: sawtooth-validator-default-0
+    hostname: sawtooth-0
+    expose:
+      - 4004
+      - 5050
+      - 8800
+    volumes:
+      - ./validator-0/data:/var/lib/sawtooth
+      - ./validator-0/log:/var/log/sawtooth
+      - ./validator-0/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+    command: "bash -c \"\
+        sawadm keygen --force && \
+        mkdir -p /poet-shared/validator-0 || true && \
+        cp -a /etc/sawtooth/keys /poet-shared/validator-0/ && \
+        while [ ! -f /poet-shared/poet-enclave-measurement ]; do sleep 1; done && \
+        while [ ! -f /poet-shared/poet-enclave-basename ]; do sleep 1; done && \
+        while [ ! -f /poet-shared/poet.batch ]; do sleep 1; done && \
+        cp /poet-shared/poet.batch / && \
+        sawset genesis \
+          -k /etc/sawtooth/keys/validator.priv \
+          -o config-genesis.batch && \
+        sawset proposal create \
+          -k /etc/sawtooth/keys/validator.priv \
+          sawtooth.consensus.algorithm.name=PoET \
+          sawtooth.consensus.algorithm.version=0.1 \
+          sawtooth.poet.report_public_key_pem=\
+          \\\"$$(cat /poet-shared/simulator_rk_pub.pem)\\\" \
+          sawtooth.poet.valid_enclave_measurements=$$(cat /poet-shared/poet-enclave-measurement) \
+          sawtooth.poet.valid_enclave_basenames=$$(cat /poet-shared/poet-enclave-basename) \
+          -o config.batch && \
+        sawset proposal create \
+          -k /etc/sawtooth/keys/validator.priv \
+            sawtooth.poet.target_wait_time=60 \
+            sawtooth.poet.initial_wait_time=25 \
+            sawtooth.publisher.max_batches_per_block=100 \
+          -o poet-settings.batch && \
+        sawadm genesis \
+          config-genesis.batch config.batch poet.batch poet-settings.batch && \
+        sawtooth-validator -vv \
+          --bind network:tcp://eth0:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind consensus:tcp://eth0:5050 \
+          --peering dynamic \
+          --endpoint tcp://validator-0:8800 \
+          --scheduler parallel \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
+          --network-auth trust
+    \""
+    environment:
+      PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
+        /project/sawtooth-core/consensus/poet/simulator:\
+        /project/sawtooth-core/consensus/poet/core"
+    stop_signal: SIGKILL
+
+  validator-1:
+    image: hyperledger/sawtooth-validator:1.1.4
+    container_name: sawtooth-validator-default-1
+    hostname: sawtooth-1
+    expose:
+      - 4004
+      - 5050
+      - 8800
+    volumes:
+      - ./validator-1/data:/var/lib/sawtooth
+      - ./validator-1/log:/var/log/sawtooth
+      - ./validator-1/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+    command: |
+      bash -c "
+        sawadm keygen --force && \
+        mkdir -p /poet-shared/validator-1 || true && \
+        cp -a /etc/sawtooth/keys /poet-shared/validator-1/ && \
+        sawtooth-validator -vv \
+            --bind network:tcp://eth0:8800 \
+            --bind component:tcp://eth0:4004 \
+            --bind consensus:tcp://eth0:5050 \
+            --peering dynamic \
+            --endpoint tcp://validator-1:8800 \
+            --seeds tcp://validator-0:8800 \
+            --scheduler parallel \
+            --opentsdb-db metrics \
+            --opentsdb-url http://influxdb:8086 \
+            --network-auth trust
+      "
+    environment:
+      PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
+        /project/sawtooth-core/consensus/poet/simulator:\
+        /project/sawtooth-core/consensus/poet/core"
+    stop_signal: SIGKILL
+
+  validator-2:
+    image: hyperledger/sawtooth-validator:1.1.4
+    container_name: sawtooth-validator-default-2
+    hostname: sawtooth-2
+    expose:
+      - 4004
+      - 5050
+      - 8800
+    volumes:
+      - ./validator-2/data:/var/lib/sawtooth
+      - ./validator-2/log:/var/log/sawtooth
+      - ./validator-2/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+    command: |
+      bash -c "
+        sawadm keygen --force && \
+        mkdir -p /poet-shared/validator-2 && \
+        cp -a /etc/sawtooth/keys /poet-shared/validator-2/ && \
+        sawtooth-validator -vv \
+            --bind network:tcp://eth0:8800 \
+            --bind component:tcp://eth0:4004 \
+            --bind consensus:tcp://eth0:5050 \
+            --peering dynamic \
+            --endpoint tcp://validator-2:8800 \
+            --seeds tcp://validator-0:8800 \
+            --scheduler parallel \
+            --opentsdb-db metrics \
+            --opentsdb-url http://influxdb:8086 \
+            --network-auth trust
+      "
+    environment:
+      PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
+        /project/sawtooth-core/consensus/poet/simulator:\
+        /project/sawtooth-core/consensus/poet/core"
+    stop_signal: SIGKILL
+
+  validator-3:
+    image: hyperledger/sawtooth-validator:1.1.4
+    container_name: sawtooth-validator-default-3
+    hostname: sawtooth-3
+    expose:
+      - 4004
+      - 5050
+      - 8800
+    volumes:
+      - ./validator-3/data:/var/lib/sawtooth
+      - ./validator-3/log:/var/log/sawtooth
+      - ./validator-3/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+    command: |
+      bash -c "
+        sawadm keygen --force && \
+        mkdir -p /poet-shared/validator-3 && \
+        cp -a /etc/sawtooth/keys /poet-shared/validator-3/ && \
+        sawtooth-validator -vv \
+            --bind network:tcp://eth0:8800 \
+            --bind component:tcp://eth0:4004 \
+            --bind consensus:tcp://eth0:5050 \
+            --peering dynamic \
+            --endpoint tcp://validator-3:8800 \
+            --seeds tcp://validator-0:8800 \
+            --scheduler parallel \
+            --opentsdb-db metrics \
+            --opentsdb-url http://influxdb:8086 \
+            --network-auth trust
+      "
+    environment:
+      PYTHONPATH: "/project/sawtooth-core/consensus/poet/common:\
+        /project/sawtooth-core/consensus/poet/simulator:\
+        /project/sawtooth-core/consensus/poet/core"
+    stop_signal: SIGKILL
+
+  rest-api-0:
+    image: hyperledger/sawtooth-rest-api:1.1.4
+    container_name: sawtooth-rest-api-default-0
+    expose:
+      - 8008
+    ports:
+      - "8008:8008"
+    command: |
+      bash -c "
+        sawtooth-rest-api -vvv \
+          --connect tcp://validator-0:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
+          --bind rest-api-0:8008
+      "
+    stop_signal: SIGKILL
+
+  rest-api-1:
+    image: hyperledger/sawtooth-rest-api:1.1.4
+    container_name: sawtooth-rest-api-default-1
+    expose:
+      - 8008
+    ports:
+      - "8009:8008"
+    command: |
+      bash -c "
+        sawtooth-rest-api -vvv \
+          --connect tcp://validator-1:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
+          --bind rest-api-1:8008
+      "
+    stop_signal: SIGKILL
+
+  rest-api-2:
+    image: hyperledger/sawtooth-rest-api:1.1.4
+    container_name: sawtooth-rest-api-default-2
+    expose:
+      - 8008
+    ports:
+      - "8010:8008"
+    command: |
+      bash -c "
+        sawtooth-rest-api -vvv\
+          --connect tcp://validator-2:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
+          --bind rest-api-2:8008
+      "
+    stop_signal: SIGKILL
+
+  rest-api-3:
+    image: hyperledger/sawtooth-rest-api:1.1.4
+    container_name: sawtooth-rest-api-default-3
+    expose:
+      - 8008
+    ports:
+      - "8011:8008"
+    command: |
+      bash -c "
+        sawtooth-rest-api -vvv\
+          --connect tcp://validator-3:4004 \
+          --opentsdb-db metrics \
+          --opentsdb-url http://influxdb:8086 \
+          --bind rest-api-3:8008
+      "
+    stop_signal: SIGKILL
+
+  settings-tp-0:
+    image: hyperledger/sawtooth-settings-tp:1.1.4
+    container_name: sawtooth-settings-tp-default-0
+    expose:
+      - 4004
+    command: settings-tp -v -C tcp://validator-0:4004
+    stop_signal: SIGKILL
+
+  settings-tp-1:
+    image: hyperledger/sawtooth-settings-tp:1.1.4
+    container_name: sawtooth-settings-tp-default-1
+    expose:
+      - 4004
+    command: settings-tp -v -C tcp://validator-1:4004
+    stop_signal: SIGKILL
+
+  settings-tp-2:
+    image: hyperledger/sawtooth-settings-tp:1.1.4
+    container_name: sawtooth-settings-tp-default-2
+    expose:
+      - 4004
+    command: settings-tp -v -C tcp://validator-2:4004
+    stop_signal: SIGKILL
+
+  settings-tp-3:
+    image: hyperledger/sawtooth-settings-tp:1.1.4
+    container_name: sawtooth-settings-tp-default-3
+    expose:
+      - 4004
+    command: settings-tp -v -C tcp://validator-3:4004
+    stop_signal: SIGKILL
+
+  poet-engine-0:
+    image: hyperledger/sawtooth-poet-engine:1.1
+    container_name: sawtooth-poet-engine-0
+    volumes:
+      - ./validator-0/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+      - ./poet-0/log:/var/log/sawtooth
+      - ./poet-0/data:/var/lib/sawtooth
+    command: "bash -c \"\
+        if [ ! -f /poet-shared/poet-enclave-measurement ]; then \
+            poet enclave measurement >> /poet-shared/poet-enclave-measurement; \
+        fi && \
+        if [ ! -f /poet-shared/poet-enclave-basename ]; then \
+            poet enclave basename >> /poet-shared/poet-enclave-basename; \
+        fi && \
+        if [ ! -f /poet-shared/simulator_rk_pub.pem ]; then \
+            cp /etc/sawtooth/simulator_rk_pub.pem /poet-shared; \
+        fi && \
+        while [ ! -f /poet-shared/validator-0/keys/validator.priv ]; do sleep 1; done && \
+        cp -a /poet-shared/validator-0/keys /etc/sawtooth && \
+        poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
+        poet-engine -vv -C tcp://validator-0:5050 --component tcp://validator-0:4004 \
+    \""
+
+  poet-engine-1:
+    image: hyperledger/sawtooth-poet-engine:1.1
+    container_name: sawtooth-poet-engine-1
+    volumes:
+      - ./validator-1/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+      - ./poet-1/log:/var/log/sawtooth
+      - ./poet-1/data:/var/lib/sawtooth
+    command: "bash -c \"\
+        while [ ! -f /poet-shared/validator-1/keys/validator.priv ]; do sleep 1; done && \
+        cp -a /poet-shared/validator-1/keys /etc/sawtooth && \
+        poet-engine -vv -C tcp://validator-1:5050 --component tcp://validator-1:4004 \
+    \""
+
+  poet-engine-2:
+    image: hyperledger/sawtooth-poet-engine:1.1
+    container_name: sawtooth-poet-engine-2
+    volumes:
+      - ./validator-2/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+      - ./poet-2/log:/var/log/sawtooth
+      - ./poet-2/data:/var/lib/sawtooth
+    command: "bash -c \"\
+        while [ ! -f /poet-shared/validator-2/keys/validator.priv ]; do sleep 1; done && \
+        cp -a /poet-shared/validator-2/keys /etc/sawtooth && \
+        poet-engine -vv -C tcp://validator-2:5050 --component tcp://validator-2:4004 \
+    \""
+
+  poet-engine-3:
+    image: hyperledger/sawtooth-poet-engine:1.1
+    container_name: sawtooth-poet-engine-3
+    volumes:
+      - ./validator-3/keys:/etc/sawtooth/keys
+      - ./poet-shared:/poet-shared
+      - ./poet-3/log:/var/log/sawtooth
+      - ./poet-3/data:/var/lib/sawtooth
+    command: "bash -c \"\
+        while [ ! -f /poet-shared/validator-3/keys/validator.priv ]; do sleep 1; done && \
+        cp -a /poet-shared/validator-3/keys /etc/sawtooth && \
+        poet-engine -vv -C tcp://validator-3:5050 --component tcp://validator-3:4004 \
+    \""
+
+  poet-validator-registry-tp-0:
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
+    container_name: sawtooth-poet-validator-registry-tp-0
+    expose:
+      - 4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-0:4004
+    environment:
+      PYTHONPATH: /project/sawtooth-core/consensus/poet/common
+    stop_signal: SIGKILL
+
+  poet-validator-registry-tp-1:
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
+    container_name: sawtooth-poet-validator-registry-tp-1
+    expose:
+      - 4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-1:4004
+    environment:
+      PYTHONPATH: /project/sawtooth-core/consensus/poet/common
+    stop_signal: SIGKILL
+
+  poet-validator-registry-tp-2:
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
+    container_name: sawtooth-poet-validator-registry-tp-2
+    expose:
+      - 4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-2:4004
+    environment:
+      PYTHONPATH: /project/sawtooth-core/consensus/poet/common
+    stop_signal: SIGKILL
+
+  poet-validator-registry-tp-3:
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
+    container_name: sawtooth-poet-validator-registry-tp-3
+    expose:
+      - 4004
+    command: poet-validator-registry-tp -vv -C tcp://validator-3:4004
+    environment:
+      PYTHONPATH: /project/sawtooth-core/consensus/poet/common
+    stop_signal: SIGKILL
+
+  fruitchain-tp-go-0:
+    image: bacbia/sawtooth-fruitchain-tp-go:latest
+    container_name: fruitchain-tp-0
+    expose:
+      - 4004
+    command: fruitchain-tp-go -vv -C tcp://validator-0:4004
+    stop_signal: SIGKILL
+
+  fruitchain-tp-go-1:
+    image: bacbia/sawtooth-fruitchain-tp-go:latest
+    container_name: fruitchain-tp-1
+    expose:
+      - 4004
+    command: fruitchain-tp-go -vv -C tcp://validator-1:4004
+    stop_signal: SIGKILL
+
+  fruitchain-tp-go-2:
+    image: bacbia/sawtooth-fruitchain-tp-go:latest
+    container_name: fruitchain-tp-2
+    expose:
+      - 4004
+    command: fruitchain-tp-go -vv -C tcp://validator-2:4004
+    stop_signal: SIGKILL
+
+  fruitchain-tp-go-3:
+    image: bacbia/sawtooth-fruitchain-tp-go:latest
+    container_name: fruitchain-tp-3
+    expose:
+      - 4004
+    command: fruitchain-tp-go -vv -C tcp://validator-3:4004
+    stop_signal: SIGKILL
+
+  intkey-tp-0:
+    image: hyperledger/sawtooth-intkey-tp-python
+    container_name: intkey-tp-0
+    expose:
+      - 4004
+    command: intkey-tp-python -vv -C tcp://validator-0:4004
+    stop_signal: SIGKILL
+
+  intkey-tp-1:
+    image: hyperledger/sawtooth-intkey-tp-python
+    container_name: intkey-tp-1
+    expose:
+      - 4004
+    command: intkey-tp-python -vv -C tcp://validator-1:4004
+    stop_signal: SIGKILL
+
+  intkey-tp-2:
+    image: hyperledger/sawtooth-intkey-tp-python
+    container_name: intkey-tp-2
+    expose:
+      - 4004
+    command: intkey-tp-python -vv -C tcp://validator-2:4004
+    stop_signal: SIGKILL
+
+  intkey-tp-3:
+    image: hyperledger/sawtooth-intkey-tp-python
+    container_name: intkey-tp-3
+    expose:
+      - 4004
+    command: intkey-tp-python -vv -C tcp://validator-3:4004
+    stop_signal: SIGKILL
+
