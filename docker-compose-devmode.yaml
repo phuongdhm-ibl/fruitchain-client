@@ -15,15 +15,62 @@
 version: "3.6"
 
 services:
+  shell:
+    image: hyperledger/sawtooth-shell
+    container_name: sawtooth-shell
+    entrypoint: "bash -c \"\
+      sawtooth keygen && \
+      tail -f /dev/null \
+      \""
+
+  influxdb:
+    image: influxdb
+    container_name: sawtooth-stats-influxdb-default
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./monitor:/var/lib/influxdb
+    stop_signal: SIGKILL
+
+  telegraf:
+    image: telegraf
+    container_name: sawtooth-stats-telegraf-default
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf
+    stop_signal: SIGKILL
+
+  chronograf:
+    image: chronograf
+    container_name: sawtooth-stats-chronograf-default
+    ports:
+      - "8888:8888"
+    stop_signal: SIGKILL
+
+  kapacitor:
+    image: kapacitor
+    container_name: sawtooth-stats-kapacitor-default
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf
+    stop_signal: SIGKILL
+
+  grafana:
+    image: grafana/grafana
+    container_name: sawtooth-stats-grafana-default
+    ports:
+      - "80:3000"
+    stop_signal: SIGKILL
+
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp:1.1.2
+    image: hyperledger/sawtooth-settings-tp:1.1.4
     container_name: settings-tp
     depends_on:
       - validator
     entrypoint: settings-tp -vv -C tcp://validator:4004
 
   validator:
-    image: hyperledger/sawtooth-validator:1.1.2
+    image: hyperledger/sawtooth-validator:1.1.4
     container_name: validator
     hostname: sawtooth-validator
     expose:
@@ -66,7 +113,7 @@ services:
   #   command: fruitchain-tp-go -vv -C tcp://validator:4004
 
   devmode-rust:
-    image: hyperledger/sawtooth-devmode-engine-rust:1.1.2
+    image: hyperledger/sawtooth-devmode-engine-rust:1.1.4
     container_name: devmode-engine-rust
     depends_on:
       - validator
@@ -74,7 +121,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api:
-    image: hyperledger/sawtooth-rest-api:1.1.2
+    image: hyperledger/sawtooth-rest-api:1.1.4
     container_name: rest-api
     expose:
       - 4004
@@ -88,22 +135,15 @@ services:
       \""
     stop_signal: SIGKILL
 
-  influxdb:
-    image: socoboy/installed-sawtooth-stats-influxdb:1.2.1
-    container_name: influxdb
-    ports:
-      - "8086:8086"
+  intkey-tp:
+    image: hyperledger/sawtooth-intkey-tp-python
+    container_name: intkey-tp
+    expose:
+      - 4004
+    command: intkey-tp-python -vv -C tcp://validator:4004
     stop_signal: SIGKILL
-
-  grafana:
-    image: socoboy/installed-sawtooth-stats-grafana:1.2.1
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    stop_signal: SIGKILL
-
-  block-info-tp:
-    image: sawtooth-block-info-tp:1.1.2
-    container_name: block-info-tp
-    command: block-info-tp -vvv -C tcp://validator:4004
-    stop_signal: SIGKILL
+  # block-info-tp:
+  #   image: sawtooth-block-info-tp:1.1.2
+  #   container_name: block-info-tp
+  #   command: block-info-tp -vvv -C tcp://validator:4004
+  #   stop_signal: SIGKILL
