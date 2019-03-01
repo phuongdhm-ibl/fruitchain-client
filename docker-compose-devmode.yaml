@@ -14,53 +14,53 @@
 
 version: "3.6"
 
-services:
-  shell:
-    image: hyperledger/sawtooth-shell
-    container_name: sawtooth-shell
-    entrypoint: "bash -c \"\
-        sawtooth keygen && \
-        tail -f /dev/null \
-        \"" 
+# services:
+#   shell:
+#     image: hyperledger/sawtooth-shell
+#     container_name: sawtooth-shell
+#     entrypoint: "bash -c \"\
+#       sawtooth keygen && \
+#       tail -f /dev/null \
+#       \""
 
-  influxdb:
-    image: influxdb
-    container_name: sawtooth-stats-influxdb-default
-    ports:
-      - "8086:8086"
-    volumes:
-      - ./monitor:/var/lib/influxdb
-    stop_signal: SIGKILL
+  # influxdb:
+  #   image: influxdb
+  #   container_name: sawtooth-stats-influxdb-default
+  #   ports:
+  #     - "8086:8086"
+  #   volumes:
+  #     - ./monitor:/var/lib/influxdb
+  #   stop_signal: SIGKILL
 
-  telegraf:
-    image: telegraf
-    container_name: sawtooth-stats-telegraf-default
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf
-    stop_signal: SIGKILL
+  # telegraf:
+  #   image: telegraf
+  #   container_name: sawtooth-stats-telegraf-default
+  #   volumes:
+  #     - ./telegraf.conf:/etc/telegraf/telegraf.conf
+  #   stop_signal: SIGKILL
 
-  chronograf:
-    image: chronograf
-    container_name: sawtooth-stats-chronograf-default
-    ports:
-      - "8888:8888"
-    stop_signal: SIGKILL       
+  # chronograf:
+  #   image: chronograf
+  #   container_name: sawtooth-stats-chronograf-default
+  #   ports:
+  #     - "8888:8888"
+  #   stop_signal: SIGKILL
 
-  kapacitor:
-    image: kapacitor
-    container_name: sawtooth-stats-kapacitor-default
-    ports:
-      - "9092:9092"
-    volumes:
-      - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf
-    stop_signal: SIGKILL
+  # kapacitor:
+  #   image: kapacitor
+  #   container_name: sawtooth-stats-kapacitor-default
+  #   ports:
+  #     - "9092:9092"
+  #   volumes:
+  #     - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf
+  #   stop_signal: SIGKILL
 
-  grafana:
-    image: grafana
-    container_name: sawtooth-stats-grafana-default
-    ports:
-      - "80:3000"
-    stop_signal: SIGKILL
+  # grafana:
+  #   image: grafana
+  #   container_name: sawtooth-stats-grafana-default
+  #   ports:
+  #     - "80:3000"
+  #   stop_signal: SIGKILL
 
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:1.1.4
@@ -105,12 +105,12 @@ services:
         /project/sawtooth-core/consensus/poet/core"
     stop_signal: SIGKILL
 
-  # fruitchain-tp-go:
-  #   image: socoboy/sawtooth-fruitchain-tp-go:latest
-  #   container_name: sawtooth-fruitchain-tp-go-default
-  #   depends_on:
-  #     - validator
-  #   command: fruitchain-tp-go -vv -C tcp://validator:4004
+  fruitchain-tp-go:
+    image: bacbia/sawtooth-fruitchain-tp-go:latest
+    container_name: sawtooth-fruitchain-tp-go-default
+    depends_on:
+      - validator
+    command: fruitchain-tp-go -vv -C tcp://validator:4004
 
   devmode-rust:
     image: hyperledger/sawtooth-devmode-engine-rust:1.1.4
@@ -149,13 +149,13 @@ services:
       - "3000:3000"
     stop_signal: SIGKILL
 
-  intkey-tp:
-    image: hyperledger/sawtooth-intkey-tp-python
-    container_name: intkey-tp
-    expose:
-      - 4004
-    command: intkey-tp-python -vv -C tcp://validator:4004
-    stop_signal: SIGKILL
+  # intkey-tp:
+  #   image: hyperledger/sawtooth-intkey-tp-python
+  #   container_name: intkey-tp
+  #   expose:
+  #     - 4004
+  #   command: intkey-tp-python -vv -C tcp://validator:4004
+  #   stop_signal: SIGKILL
   # block-info-tp:
   #   image: sawtooth-block-info-tp:1.1.2
   #   container_name: block-info-tp
